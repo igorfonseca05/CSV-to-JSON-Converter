@@ -9,20 +9,20 @@ function Home() {
           <div className="px-0 md:px-10 lg:px-40 flex flex-1 justify-center">
             <div className="layout-content-container flex flex-col max-w-[960px] flex-1 w-full gap-8 md:gap-10">
               <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-white/10 px-4 sm:px-10 py-3">
-                <div className="flex items-center gap-4 text-white">
-                  <div className="size-6 text-[#135bec]">
+                <div className="flex items-center gap-4 py-2 text-white">
+                  <div className="size-6 text-indigo-500">
                     <FaFile size={28} />
                   </div>
                   <h2 className="text-white text-lg font-bold leading-tight tracking-[-0.015em]">
                    CSV → JSON Converter
                   </h2>
                 </div>
-                <a
+                {/* <a
                   className="hidden sm:flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#135bec] text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-[#135bec]/90 transition-colors"
                   href="#"
                 >
                   <span className="truncate">Documentação</span>
-                </a>
+                </a> */}
               </header>
               <header className="flex flex-col items-center gap-2 text-center">
                 {/* <h1 className="text-white text-3xl sm:text-4xl font-bold tracking-tight">

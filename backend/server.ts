@@ -8,7 +8,6 @@ import { createReadStream } from "fs";
 import fs from "fs";
 import { uid } from "uid";
 
-import ConvertFile from "./stream/converter";
 
 const app = express();
 
@@ -132,7 +131,7 @@ app.post(
     const ext = path.extname(filePath);
 
     if (ext !== '.csv')
-      return res.status(500).json({
+      return res.status(400).json({
         message: "Formato inválido. Envie apenas arquivos CSV.",
         status: "error",
       });
