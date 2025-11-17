@@ -29,8 +29,8 @@ export function LinesContainer({ data }: { data: string[] }) {
           className="custom-scroll-y hide-scroll-x"
             style={{ height: 600}}
             data={[JSON.stringify(data)]}
-            followOutput={(isAtBottom) => true}
-            itemContent={(index, line) => (
+            followOutput={(_isAtBottom) => true}
+            itemContent={(_index, line) => (
               <code className="font-mono text-sm text-slate-400">{line}</code>
             )}
           />
