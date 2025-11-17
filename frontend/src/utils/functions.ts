@@ -1,13 +1,4 @@
 
-export function getBackendURL() {
-  const isRailway = window.location.hostname;
-
-  return isRailway.includes('railway')
-    ? import.meta.env.VITE_BACKEND_URL
-    : "http://localhost:3000";
-}
-
-
 
 // // Cria uma nova instância de requisição
     // const xhr = new XMLHttpRequest();

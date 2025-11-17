@@ -5,7 +5,6 @@ import { toast } from "react-toastify";
 import axios from "axios";
 
 import { Result } from "../../../components/Result";
-import { getBackendURL } from "../../../utils/functions";
 
 function UploadForm() {
   const [file, setFile] = useState<File | null>(null);
@@ -15,14 +14,11 @@ function UploadForm() {
   const [progress, setProgress] = useState<number | null>(0);
   const [id, setID] = useState("");
   const [done, setDone] = useState(false);
-
   const [time, setTime] = useState<number>(0);
 
   const allData = useRef<string[]>([]);
 
-  const url = `${getBackendURL()}/upload`;
-
-  console.log(url);
+  const baseurl = import.meta.env.VITE_BACKEND_URL
 
   // Limitar tamanho do arquivo
   const onFile = useCallback((file: File | null) => {
@@ -100,7 +96,7 @@ function UploadForm() {
     formData.append("file", file);
 
     try {
-      const res = await axios.post(url, formData, {
+      const res = await axios.post(`${baseurl}/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -127,7 +123,7 @@ function UploadForm() {
 
   useEffect(() => {
     if (!id) return;
-    const event = new EventSource(`${getBackendURL()}/events?jobID=${id}`);
+    const event = new EventSource(`${baseurl}/events?jobID=${id}`);
 
     setTime(Date.now());
 
