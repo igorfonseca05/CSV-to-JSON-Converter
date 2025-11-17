@@ -19,7 +19,7 @@ function UploadForm() {
 
   const allData = useRef<string[]>([]);
 
-  const url = import.meta.env.VITE_BACKEND_URL;
+  const url = `${import.meta.env.VITE_BACKEND_URL}/uploads`;
 
   // Limitar tamanho do arquivo
   const onFile = useCallback((file: File | null) => {
@@ -124,7 +124,7 @@ function UploadForm() {
 
   useEffect(() => {
     if (!id) return;
-    const event = new EventSource(`${import.meta.env.VITE_BACKEND_URL}?jobID=${id}`);
+    const event = new EventSource(`${import.meta.env.VITE_BACKEND_URL}/events?jobID=${id}`);
 
     setTime(Date.now());
 
