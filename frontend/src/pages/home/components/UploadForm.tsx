@@ -19,7 +19,7 @@ function UploadForm() {
 
   const allData = useRef<string[]>([]);
 
-  const url = `${import.meta.env.VITE_BACKEND_URL}/uploads`;
+  const url = `${import.meta.env.VITE_BACKEND_URL}/upload`;
 
   // Limitar tamanho do arquivo
   const onFile = useCallback((file: File | null) => {
