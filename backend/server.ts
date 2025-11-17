@@ -28,7 +28,7 @@ const port = process.env.port || 3000;
 app.use(express.json());
 app.use(
   cors({
-    origin: "https://csv-to-json-converter-rouge.vercel.app/",
+    origin: "https://csv-to-json-converter-rouge.vercel.app",
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
