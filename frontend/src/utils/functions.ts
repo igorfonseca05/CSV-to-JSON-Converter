@@ -1,30 +1,11 @@
-export function handleDragEnter(e: React.DragEvent) {
-  e.preventDefault();
-  e.stopPropagation();
+
+export function getBackendURL() {
+  const isRailway = window.location.hostname;
+
+  return isRailway.includes('railway')
+    ? import.meta.env.VITE_BACKEND_URL
+    : "http://localhost:3000";
 }
-
-export function handleDragOver(e: React.DragEvent) {
-  e.preventDefault();
-  e.stopPropagation();
-}
-
-export function handleDragLeave(e: React.DragEvent) {
-  e.preventDefault();
-  e.stopPropagation();
-}
-
-export function handleDrop(e: React.DragEvent) {
-  e.preventDefault();
-  e.stopPropagation();
-}
-
-
-export function Event(jobID: string) {
-    const event = new EventSource(`http://localhost:3000/events?jobID=${jobID}`)
-    return event
-}
-
-
 
 
 

@@ -5,8 +5,9 @@ import { toast } from "react-toastify";
 import axios from "axios";
 
 import { Result } from "../../../components/Result";
+import { getBackendURL } from "../../../utils/functions";
 
-function UploadForm() { 
+function UploadForm() {
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -19,7 +20,9 @@ function UploadForm() {
 
   const allData = useRef<string[]>([]);
 
-  const url = `${import.meta.env.VITE_BACKEND_URL}/upload`;
+  const url = `${getBackendURL()}/upload`;
+
+  console.log(url);
 
   // Limitar tamanho do arquivo
   const onFile = useCallback((file: File | null) => {
@@ -124,7 +127,7 @@ function UploadForm() {
 
   useEffect(() => {
     if (!id) return;
-    const event = new EventSource(`${import.meta.env.VITE_BACKEND_URL}/events?jobID=${id}`);
+    const event = new EventSource(`${getBackendURL()}/events?jobID=${id}`);
 
     setTime(Date.now());
 
@@ -180,15 +183,24 @@ function UploadForm() {
       )}
 
       {upload && !done && (
-        <div className="flex-col items-center justify-center bg-white/5 border border-white/10 gap-6 rounded-xl min-h-[239px]  sm:p-8 md:p-14">
-          <p className="text-white text-xl sm:text-2xl mb-8 font-bold text-center leading-tight tracking-[-0.015em]">
-            Processando: {progress}%
+        <div className="flex-col items-center justify-center bg-white/5 border border-white/10 gap-6 rounded-xl min-h-[239px] sm:p-8 md:p-14 animate-fade">
+          <p className="text-indigo-500 text-xl sm:text-2xl mb-3 font-bold text-center leading-tight tracking-[-0.015em] animate-pulse">
+            Convertendo seu arquivo...
           </p>
-          <div className="h-2 w-full rounded-full bg-slate-800">
+
+          <p className="text-white/70 text-center m-auto text-sm sm:text-base max-w-[280px]">
+            Isso pode levar até <strong>1 minuto</strong> para arquivos maiores.
+            Não feche a página — estamos quase lá.
+          </p>
+
+          <div className="h-2 w-full rounded-full bg-slate-800 overflow-hidden mt-6 relative">
             <div
-              className="h-2 mt-2 rounded-full bg-indigo-500"
+              className="h-2 rounded-full bg-indigo-500 transition-all duration-300"
               style={{ width: `${progress}%` }}
             ></div>
+
+            {/* brilho passando no fundo da barra */}
+            <div className="absolute inset-0 animate-[shimmer_2s_infinite] bg-linear-to-r from-transparent via-white/10 to-transparent"></div>
           </div>
         </div>
       )}
