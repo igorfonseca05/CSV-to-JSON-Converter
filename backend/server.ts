@@ -23,7 +23,7 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
-const port = 3000;
+const port = process.env.port || 3000;
 
 app.use(express.json());
 app.use(
@@ -114,8 +114,6 @@ app.post(
     const filePath = req.file?.path;
     const jobID = uid();
 
-    console.log(req.file?.size);
-
     if (!jobID)
       return res.json({
         message: "Error ao criar ID de processamente",
@@ -136,7 +134,6 @@ app.post(
         status: "error",
       });
 
-    console.log(ext);
 
     res.json({
       message: "Processamento iniciado",
