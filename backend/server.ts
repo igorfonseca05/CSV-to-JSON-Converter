@@ -8,7 +8,6 @@ import { createReadStream } from "fs";
 import fs from "fs";
 import { uid } from "uid";
 
-
 const app = express();
 
 const storage = multer.diskStorage({
@@ -26,13 +25,18 @@ const upload = multer({ storage });
 const port = process.env.port || 3000;
 
 app.use(express.json());
+
+// -------------- CORS CORRIGIDO --------------
 app.use(
   cors({
     origin: "https://csv-to-json-converter-rouge.vercel.app",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type"],
   })
 );
+
+// Necessário para SSE funcionar no Render
+app.set("trust proxy", true);
 
 export const clients: Record<string, any> = {};
 
@@ -43,11 +47,15 @@ app.get("/", (req: Request, res: Response) => {
 app.get("/events", (req, res) => {
   const jobID = req.query.jobID as string;
 
-  // Configurando SSE
+  // SSE headers obrigatórios no Render
   res.setHeader("Content-Type", "text/event-stream");
-  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Cache-Control", "no-cache, no-transform");
   res.setHeader("Connection", "keep-alive");
+  res.setHeader("X-Accel-Buffering", "no"); // MUITO IMPORTANTE
   res.flushHeaders();
+
+  // Manda um "ping" para o cliente aceitar a conexão
+  res.write(`event: connected\ndata: ok\n\n`);
 
   clients[jobID] = res;
 
@@ -56,11 +64,7 @@ app.get("/events", (req, res) => {
   });
 });
 
-async function fileProcessor(
-  filePath: string,
-  jobID: string,
-  fileSize?: number
-) {
+async function fileProcessor(filePath: string, jobID: string, fileSize?: number) {
   while (!clients[jobID]) {
     await new Promise((r) => setTimeout(r, 50));
   }
@@ -70,19 +74,18 @@ async function fileProcessor(
   if (!client || !filePath || !fileSize)
     return client.status(505).json({ message: "error" });
 
-  // Convertendo arquivo e enviando para o frontend
-  const readStrem = fs.createReadStream(filePath);
+  const readStream = fs.createReadStream(filePath);
 
   let buffer: string[] = [];
   let processedBytes = 0;
 
-  readStrem.on("data", (chunk) => {
+  readStream.on("data", (chunk) => {
     processedBytes += chunk.length;
     const progress = (processedBytes / fileSize) * 100;
     client.write(`event: progress\ndata: ${progress.toFixed(0)}\n\n`);
   });
 
-  readStrem
+  readStream
     .pipe(csv())
     .on("data", (row) => {
       buffer.push(row);
@@ -98,7 +101,7 @@ async function fileProcessor(
 
       client.write(`event: done\ndata: ${Date.now()}\n\n`);
       client.end();
-      fs.unlinkSync(filePath); // Remover arquivo após leitura
+      fs.unlinkSync(filePath);
     })
     .on("error", (err) => {
       client.write(`event: error\ndata: ${err.message}\n\n`);
@@ -106,44 +109,29 @@ async function fileProcessor(
     });
 }
 
-// Rota que recebe arquivo
-app.post(
-  "/upload",
-  upload.single("file"),
-  async (req: Request, res: Response) => {
-    const filePath = req.file?.path;
-    const jobID = uid();
+app.post("/upload", upload.single("file"), async (req: Request, res: Response) => {
+  const filePath = req.file?.path;
+  const jobID = uid();
 
-    if (!jobID)
-      return res.json({
-        message: "Error ao criar ID de processamente",
-        status: "error",
-      });
+  if (!filePath)
+    return res.status(400).json({ message: "Erro ao obter arquivo" });
 
-    if (!filePath)
-      return res.json({
-        message: "Error ao obter caminho no arquivo",
-        status: "error",
-      });
+  const ext = path.extname(filePath);
 
-    const ext = path.extname(filePath);
-
-    if (ext !== '.csv')
-      return res.status(400).json({
-        message: "Formato inválido. Envie apenas arquivos CSV.",
-        status: "error",
-      });
-
-
-    res.json({
-      message: "Processamento iniciado",
-      status: "processing",
-      jobID,
+  if (ext !== ".csv")
+    return res.status(400).json({
+      message: "Formato inválido. Envie apenas arquivos CSV.",
+      status: "error",
     });
 
-    process.nextTick(() => fileProcessor(filePath, jobID, req.file?.size));
-  }
-);
+  res.json({
+    message: "Processamento iniciado",
+    status: "processing",
+    jobID,
+  });
+
+  process.nextTick(() => fileProcessor(filePath, jobID, req.file?.size));
+});
 
 app.listen(port, () => {
   console.log(`Servidor rodando em http://localhost:${port}`);
