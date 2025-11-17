@@ -27,7 +27,7 @@ const port = process.env.PORT ? Number(process.env.PORT) : 3000;
 
 app.use(express.json());
 
-// -------------- CORS CORRIGIDO --------------
+
 app.use(
   cors({
     origin: "*",
@@ -37,7 +37,6 @@ app.use(
   })
 );
 
-// Necessário para SSE funcionar no Render
 app.set("trust proxy", true);
 
 export const clients: Record<string, any> = {};
@@ -56,7 +55,7 @@ app.get("/events", (req, res) => {
   res.setHeader("X-Accel-Buffering", "no"); // MUITO IMPORTANTE
   res.flushHeaders();
 
-  // Manda um "ping" para o cliente aceitar a conexão
+  // Manda um "ping" para iniciar conexão com cliente
   res.write(`event: connected\ndata: ok\n\n`);
 
   clients[jobID] = res;

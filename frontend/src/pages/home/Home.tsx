@@ -76,7 +76,7 @@ function Home() {
                         Suporte a arquivos grandes
                       </p>
                       <p className="text-[#92a4c9] text-sm font-normal leading-normal">
-                        Envie arquivos de até 100 MB sem preocupações.
+                        Envie arquivos de até 20 MB sem preocupações.
                       </p>
                     </div>
                   </div>

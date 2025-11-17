@@ -18,13 +18,13 @@ function UploadForm() {
 
   const allData = useRef<string[]>([]);
 
-  const baseurl = import.meta.env.VITE_BACKEND_URL
+  const baseurl = import.meta.env.VITE_BACKEND_URL;
 
   // Limitar tamanho do arquivo
   const onFile = useCallback((file: File | null) => {
     if (!file) return;
     setError(null);
-    const maxSizeMb = 100;
+    const maxSizeMb = 20;
     if (file.size > maxSizeMb * 1024 * 1024) {
       setError(`Arquivo excedeu o limite de ${maxSizeMb}MB`);
       setFile(null);
@@ -38,7 +38,8 @@ function UploadForm() {
     if (e.target.files) onFile(e.target.files[0]);
   }
 
-  // Remover comportamento padrão do navegador
+
+  // Remover comportamento padrão do navegador-------------------
   function handleDragEnter(e: React.DragEvent) {
     e.preventDefault();
     e.stopPropagation();
@@ -67,19 +68,10 @@ function UploadForm() {
       await onFile(dt.files[0]);
     }
   }
-  // ------------------------------------------
 
-  function clearStatesUp() {
-    setIsDragging(false);
-    setUpload(false);
-    setProgress(0);
-    setFile(null);
-    setError(null);
-    setDone(false);
-    allData.current = [];
-  }
+  //-------------------------------------------------
 
-  // Função principal de upload
+  // Função principal para realizar upload
   async function upload_file() {
     if (!file) {
       setError("Nenhum arquivo selecionado.");
@@ -89,7 +81,6 @@ function UploadForm() {
     setTime(Date.now());
     setUpload(true);
     setError(null);
-    // setProgress(0);
 
     // converter dado para binário
     const formData = new FormData();
@@ -121,6 +112,8 @@ function UploadForm() {
     }
   }, [error]);
 
+
+  // Ouvindo os eventos do SSE
   useEffect(() => {
     if (!id) return;
     const event = new EventSource(`${baseurl}/events?jobID=${id}`);
@@ -152,6 +145,8 @@ function UploadForm() {
     });
   }, [id]);
 
+
+  // verificando formato no frontend(1 camada de validação)
   useEffect(() => {
     if (!file) return;
 
@@ -160,6 +155,18 @@ function UploadForm() {
       setFile(null);
     }
   }, [file]);
+
+
+  // Função resposavel por reiniciar novo envio
+  function clearStatesUp() {
+    setIsDragging(false);
+    setUpload(false);
+    setProgress(0);
+    setFile(null);
+    setError(null);
+    setDone(false);
+    allData.current = [];
+  }
 
   return (
     <motion.div
