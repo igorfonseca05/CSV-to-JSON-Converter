@@ -6,7 +6,7 @@ import axios from "axios";
 
 import { Result } from "../../../components/Result";
 
-function UploadForm() {
+function UploadForm() { 
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
