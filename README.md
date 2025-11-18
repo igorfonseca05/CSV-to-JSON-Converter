@@ -43,6 +43,24 @@ Neste trabalho optei por usar a arquitetura de software monolitica, dado que uma
 ```
 
 ---
+## 📁 Estrutura Simplificada (Frontend)
+```
+/src
+ ├── components(global)/
+ ├── pages/
+ ├── utils/
+ ├── App.css/
+ ├── App.tsx/
+ ├── index.css/
+ └── index.tsx/
+```
+
+---
+
+## 🧪 Resultados testes automatizados com jest
+<img width="937" height="363" alt="image" src="https://github.com/user-attachments/assets/88b9897c-e213-4bde-b587-604e4322ba0e" />
+
+---
 
 ## 🔄 Fluxo do Sistema
 
