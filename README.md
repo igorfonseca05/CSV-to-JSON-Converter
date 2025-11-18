@@ -106,15 +106,3 @@ npm start
 * Dashboard para visualizar o progresso em tempo real
 * Suporte a múltiplos formatos de entrada
 * Log de processamento
-
----
-
-## 📄 Licença
-
-Este projeto está licenciado sob a **MIT License**.
-
----
-
-Se quiser, posso **formar um README ainda mais completo**, incluir **badges**, **GIFs**, **instruções detalhadas de API**, ou criar uma **versão para portfólio ainda mais forte**.
-
-Quer que eu melhore ou estilize mais alguma parte?
