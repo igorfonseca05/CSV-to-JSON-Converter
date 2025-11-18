@@ -24,7 +24,7 @@ function UploadForm() {
   const onFile = useCallback((file: File | null) => {
     if (!file) return;
     setError(null);
-    const maxSizeMb = 20;
+    const maxSizeMb = 6;
     if (file.size > maxSizeMb * 1024 * 1024) {
       setError(`Arquivo excedeu o limite de ${maxSizeMb}MB`);
       setFile(null);
@@ -37,7 +37,6 @@ function UploadForm() {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files) onFile(e.target.files[0]);
   }
-
 
   // Remover comportamento padrão do navegador-------------------
   function handleDragEnter(e: React.DragEvent) {
@@ -112,7 +111,6 @@ function UploadForm() {
     }
   }, [error]);
 
-
   // Ouvindo os eventos do SSE
   useEffect(() => {
     if (!id) return;
@@ -145,7 +143,6 @@ function UploadForm() {
     });
   }, [id]);
 
-
   // verificando formato no frontend(1 camada de validação)
   useEffect(() => {
     if (!file) return;
@@ -155,7 +152,6 @@ function UploadForm() {
       setFile(null);
     }
   }, [file]);
-
 
   // Função resposavel por reiniciar novo envio
   function clearStatesUp() {
